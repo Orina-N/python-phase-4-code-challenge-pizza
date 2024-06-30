@@ -26,11 +26,16 @@ def index():
 @app.route("/restaurants", methods=["GET", "POST"])
 def restaurants():
     if request.method == "GET":
-        restaurants = Restaurant.query.all()
-        restaurants_dict = [restaurant.to_dict(rules=("-restaurant_pizzas",)) for restaurant in restaurants]
-        response = make_response(jsonify(restaurants_dict), 200)
-        return response
-
+        restaurants = []
+        for restaurant in Restaurant.query.all():
+            restaurants_dict = {
+                "address":restaurant.address,
+                "id":restaurant.id,
+                "name":restaurant.name
+            }
+            restaurants.append(restaurants_dict)
+        return make_response(jsonify(restaurants), 200)
+        
     elif request.method == "POST":
         restaurant = Restaurant(
             name=request.json.get("name"),
